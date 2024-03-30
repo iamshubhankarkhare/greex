@@ -28,13 +28,13 @@ export const chartBaseOptions: PartialChartOptions = {
     textColor: '#d1d4dc',
   },
   crosshair: {
-    mode: 1, // magnet mode
+    mode: 0,
     vertLine: {
       color: '#4e5054',
       width: 1,
       style: 0,
       visible: true,
-      labelVisible: true,
+      labelVisible: false,
       labelBackgroundColor: '#4c525e',
     },
     horzLine: {

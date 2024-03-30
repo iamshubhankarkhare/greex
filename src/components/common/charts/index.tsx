@@ -1,60 +1,108 @@
 'use client'
-import React, { useEffect, useRef } from 'react'
-import { createChart, ColorType } from 'lightweight-charts'
+import React, { useState, useEffect, useRef } from 'react'
+import { IChartApi, createChart } from 'lightweight-charts'
 import {
   candleStickChartOptions,
   chartBaseOptions,
 } from '@/constants/basicChartConfig'
+import axios from 'axios'
+import { Button } from '@/components/ui/button'
+import { CandleData } from '@/types/candleStickChart'
 
-const Chart = ({ data }) => {
-  const chartRef = useRef(null)
+const Chart = () => {
+  // states
+  const chartRef = useRef<HTMLDivElement>(null)
+  const pricesWs = useRef<WebSocket | null>(null)
+  const [selectedCoin, setSelectedCoin] = useState('bitcoin') // Default to Bitcoin
+  const [priceData, setPriceData] = useState<CandleData[] | null>(null)
+  const [error, setError] = useState(null)
+  const [currentBar, setCurrentBar] = useState<CandleData>({
+    open: null,
+    high: null,
+    low: null,
+    close: null,
+    time: new Date().toISOString().split('T')[0],
+  })
+
+  // methods
+  const fetchPrice = async () => {
+    try {
+      const response = await axios.get(
+        `/api/getHistoricalPrices?coin=${selectedCoin}`,
+      )
+      setPriceData(response.data.entities)
+      console.log('response', response.data.entities)
+    } catch (err: any) {
+      setError(err.message)
+    }
+  }
+
+  const handleCoinChange = () => {
+    if (selectedCoin === 'bitcoin') {
+      setSelectedCoin('ethereum')
+    } else {
+      setSelectedCoin('bitcoin')
+    }
+    fetchPrice()
+  }
+
+  const mergeTickToBar = (price: number) => {
+    if (currentBar.open === null) {
+      currentBar.open = price
+      currentBar.high = price
+      currentBar.low = price
+      currentBar.close = price
+    } else {
+      currentBar.close = price
+      currentBar.high = Math.max(currentBar.high, price)
+      currentBar.low = Math.min(currentBar.low, price)
+    }
+  }
+
+  // lifecycle
 
   useEffect(() => {
-    if (data && chartRef.current) {
-      console.log('data', data)
+    if (!priceData?.length) return
+
+    if (!pricesWs.current) {
+      pricesWs.current = new WebSocket(
+        'wss://ws.coincap.io/prices?assets=bitcoin',
+      )
+
+      pricesWs.current.onmessage = function (msg) {
+        // Update the last candlestick with the live price
+        if (msg.data) {
+          // convert the price to number which is a string in a float format right now
+          const priceObject = JSON.parse(msg.data)
+          const currentPrice = parseFloat(priceObject[selectedCoin])
+          console.log('currentPrice', currentPrice)
+        }
+      }
+    }
+
+    return () => {
+      if (pricesWs.current) {
+        pricesWs.current.close()
+        pricesWs.current = null
+      }
+    }
+  }, [priceData])
+
+  useEffect(() => {
+    console.log('priceData', priceData)
+    if (chartRef.current && priceData) {
       const chart = createChart(chartRef.current, chartBaseOptions)
       const candlestickSeries = chart.addCandlestickSeries(
         candleStickChartOptions,
       )
+      console.log('candlestickSeries', candlestickSeries)
 
-      const mockData = [
-        {
-          time: '2019-01-01',
-          open: 75.16,
-          high: 82.84,
-          low: 36.16,
-          close: 45.72,
-        },
-      ]
-      // Generate additional 50 objects
-      for (let i = 1; i <= 50; i++) {
-        const baseDate = new Date('2019-01-02')
-        const daysToAdd = i
-        const newDate = new Date(
-          baseDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000,
-        ) // Add one day for each iteration
-        const formattedDate = newDate.toISOString().slice(0, 10) // Format date as YYYY-MM-DD
-        const open = Math.random() * (150 - 110) + 110 // Random open price between 110 and 150
-        // Random high price but not negative
-        const high = Math.max(open + Math.random() * (15 - 5) + 5, 0)
-        // Random low price slightly lower than open, but not negative
-        const low = Math.max(open - Math.random() * (15 - 5) + 5, 0)
-        // random close price between low and high
-        const close = Math.random() * (high - low) + low
-        mockData.push({
-          time: formattedDate,
-          open,
-          high,
-          low,
-          close,
-        })
-      }
-
-      candlestickSeries.setData(mockData)
+      candlestickSeries.setData(priceData)
       chart.timeScale().fitContent()
 
       const handleResize = () => {
-        chart.applyOptions({ width: chartContainerRef.current.clientWidth })
+        const width = chartRef?.current?.clientWidth ?? 500
+        chart.applyOptions({ width })
       }
 
       window.addEventListener('resize', handleResize)
@@ -65,10 +113,12 @@ const Chart = ({ data }) => {
         chart.remove()
       }
     }
-  }, [data])
+  }, [priceData])
 
   return (
     <div className="py-4 bg-[#1D1F22] w-full h-full min-w-[500px] min-h-[300px] rounded-md flex items-center justify-center">
+      <div> {error && <h1 className="text-red-500">{error}</h1>}</div>
+      <Button onClick={handleCoinChange}>Bitcopin</Button>
       <div className="h-full w-full m-4 " ref={chartRef} />
     </div>
   )

@@ -2,7 +2,11 @@ import React from 'react'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
 
-export default async function DashboardLayout({ children }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
 
