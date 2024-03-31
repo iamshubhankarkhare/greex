@@ -3,7 +3,10 @@ import axios from 'axios'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { percentageRoundOff } from '@/lib/priceConvertors/formatter'
+import {
+  percentageRoundOff,
+  formatCurrency,
+} from '@/lib/priceConvertors/formatter'
 
 const CoinList = async () => {
   // methods
@@ -46,7 +49,7 @@ const CoinList = async () => {
   // UI
   return (
     <div className="flex flex-col items-center jusify-center bg-[#1D1F22] w-full h-full rounded-lg overflow-auto">
-      <div className="">
+      <div className="w-full">
         {coinListData &&
           coinListData.length &&
           coinListData.map((coin: any, i: number) => (
@@ -57,9 +60,9 @@ const CoinList = async () => {
             >
               <div
                 key={coin?.item?.name}
-                className={` cursor-pointer px-0 py-4 flex items-center justify-between w-full  border-0.5 border-[#4e5054] ${i === coinListData.length - 1 ? 'border-b-0' : 'border-b'}`}
+                className={` cursor-pointer px-0 mx-4 py-4 flex items-center justify-between   border-0.5 border-[#4e5054] ${i === coinListData.length - 1 ? 'border-b-0' : 'border-b'}`}
               >
-                <div className="flex">
+                <div className="flex w-full">
                   <Avatar className="flex items-center justify-center w-5">
                     <AvatarImage
                       src={coin?.item?.small}
@@ -77,9 +80,10 @@ const CoinList = async () => {
                     </span>
                   </div>
                 </div>
-                <div className="flex-grow" />
                 <div className="flex flex-col items-end">
-                  <span className="text-sm ">{coin?.item?.data?.price}</span>
+                  <span className="text-sm ">
+                    {formatCurrency(coin?.item?.data?.price, 4, '$')}
+                  </span>
                   <span
                     className={`text-xs ${getPercentageTextClass(coin.item.data?.price_change_percentage_24h?.usd)}`}
                   >

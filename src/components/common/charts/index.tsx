@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import { ISeriesApi, createChart } from 'lightweight-charts'
+import { useSearchParams } from 'next/navigation'
+
 import {
   candleStickChartOptions,
   chartBaseOptions,
@@ -10,7 +12,9 @@ import { Button } from '@/components/ui/button'
 import { CandleData } from '@/types/candleStickChart'
 
 const Chart = () => {
-  // states
+  const searchParams = useSearchParams()
+
+  // states and ref
   const chartRef = useRef<HTMLDivElement>(null)
   const pricesWs = useRef<WebSocket | null>(null)
   const [selectedCoin, setSelectedCoin] = useState('bitcoin') // Default to Bitcoin
@@ -69,6 +73,13 @@ const Chart = () => {
   }, [currentBar])
 
   useEffect(() => {
+    const coin = searchParams.has('coin') ? searchParams.get('coin') : 'bitcoin'
+    if (coin) {
+      setSelectedCoin(coin)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
     if (!chartRef.current || !priceData.length) {
       return
     }
@@ -91,6 +102,7 @@ const Chart = () => {
           const priceObject = JSON.parse(msg.data)
           const currentPrice = parseFloat(priceObject[selectedCoin])
           mergeTickToBar(currentPrice)
+          console.log('currentPrice', msg.data)
         }
       }
     }
@@ -101,19 +113,19 @@ const Chart = () => {
       }
       chart.remove()
     }
-  }, [priceData])
+  }, [priceData, selectedCoin])
 
   useEffect(() => {
-    fetchPrice()
-  }, [])
+    if (selectedCoin) {
+      fetchPrice()
+    }
+  }, [selectedCoin])
 
   return (
     <div className="py-4 bg-[#1D1F22] w-full h-full min-w-[500px] min-h-[300px] rounded-md flex items-center justify-center">
       <div> {error && <h1 className="text-red-500">{error}</h1>}</div>
-      {selectedCoin === 'bitcoin' ? (
-        <h1 className="text-white">Bitcoin</h1>
-      ) : (
-        <h1 className="text-white">Ethereum</h1>
+      {selectedCoin && (
+        <h1 className="text-white text-2xl font-semibold">{selectedCoin}</h1>
       )}
       <div className="h-full w-full m-4 " ref={chartRef} />
     </div>
