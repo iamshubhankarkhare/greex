@@ -2,7 +2,7 @@ import axios from 'axios'
 import { NextApiRequest } from 'next'
 
 export const GET = async function handler(req: NextApiRequest) {
-  const apiKey = process.env.COIN_GECKO_API_KEY
+  const API_KEY = process.env.COIN_GECKO_API_KEY
   const url: string = req?.url || ''
   const { searchParams } = new URL(url)
   const coin: string | null = searchParams.get('coin')
@@ -15,7 +15,7 @@ export const GET = async function handler(req: NextApiRequest) {
     const url = `https://api.coingecko.com/api/v3/coins/${coin}/ohlc?vs_currency=usd&days=365`
     const response = await axios.get(url, {
       headers: {
-        'x-cg-api-key': apiKey,
+        'x-cg-api-key': API_KEY,
       },
     })
 

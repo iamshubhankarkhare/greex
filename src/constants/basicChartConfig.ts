@@ -2,17 +2,18 @@ import {
   ColorType,
   ChartOptionsBase,
   CandlestickStyleOptions,
+  LineStyle,
 } from 'lightweight-charts'
 
 type PartialChartOptions = Partial<ChartOptionsBase>
 type PartialCandlestickStyleOptions = Partial<CandlestickStyleOptions>
 
 export const candleStickChartOptions: PartialCandlestickStyleOptions = {
-  upColor: '#169768',
-  downColor: '#AC3042',
+  upColor: '#3674D9',
+  downColor: '#E13256',
   borderVisible: false,
-  wickUpColor: '#169768',
-  wickDownColor: '#AC3042',
+  wickUpColor: '#3674D9',
+  wickDownColor: '#E13256',
 }
 
 export const chartBaseOptions: PartialChartOptions = {
@@ -30,20 +31,20 @@ export const chartBaseOptions: PartialChartOptions = {
   crosshair: {
     mode: 0,
     vertLine: {
-      color: '#4e5054',
-      width: 1,
-      style: 0,
-      visible: true,
-      labelVisible: false,
-      labelBackgroundColor: '#4c525e',
-    },
-    horzLine: {
-      color: '#4e5054',
-      width: 1,
-      style: 0,
+      width: 4,
+      color: '#C3BCDB44',
+      style: LineStyle.Solid,
+      labelBackgroundColor: '#9B7DFF',
       visible: true,
       labelVisible: true,
-      labelBackgroundColor: '#4c525e',
+    },
+    horzLine: {
+      width: 1,
+      style: LineStyle.Dotted,
+      visible: true,
+      labelVisible: true,
+      color: '#9B7DFF',
+      labelBackgroundColor: '#9B7DFF',
     },
   },
   grid: {

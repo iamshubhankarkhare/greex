@@ -1,5 +1,6 @@
 import React from 'react'
 import Chart from '@/components/common/charts/index'
+import CoinList from '@/components/common/lists/coinList'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,17 +14,17 @@ async function Dashboard() {
         direction="horizontal"
         className="rounded-lg border w-full"
       >
-        <ResizablePanel defaultSize={15}>
-          <div className="flex items-center justify-center p-6">
-            <span className="font-semibold">Panel</span>
+        <ResizablePanel defaultSize={20} className="m-4">
+          <div className="flex items-center justify-center h-full">
+            <CoinList />
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={85}>
+        <ResizablePanel defaultSize={80}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={80}>
               <div className="flex items-center justify-center p-6 h-full">
-                <Chart />
+                {/* <Chart /> */}
               </div>
             </ResizablePanel>
             <ResizableHandle />

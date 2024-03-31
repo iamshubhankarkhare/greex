@@ -27,13 +27,11 @@ const Chart = () => {
 
   // methods
   const fetchPrice = async () => {
-    console.log('fetchPrice')
     try {
       const response = await axios.get(
         `/api/getHistoricalPrices?coin=${selectedCoin}`,
       )
       setPriceData(response.data.entities)
-      console.log('response', response.data.entities)
     } catch (err: any) {
       setError(err.message)
     }
@@ -71,7 +69,6 @@ const Chart = () => {
   }, [currentBar])
 
   useEffect(() => {
-    console.log('priceData', priceData)
     if (!chartRef.current || !priceData.length) {
       return
     }
@@ -93,7 +90,6 @@ const Chart = () => {
         if (msg.data) {
           const priceObject = JSON.parse(msg.data)
           const currentPrice = parseFloat(priceObject[selectedCoin])
-          console.log('currentPrice', currentPrice)
           mergeTickToBar(currentPrice)
         }
       }
@@ -109,7 +105,6 @@ const Chart = () => {
 
   useEffect(() => {
     fetchPrice()
-    console.log('mounted')
   }, [])
 
   return (
