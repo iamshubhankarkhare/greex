@@ -19,26 +19,26 @@ async function Dashboard() {
         direction="horizontal"
         className="rounded-lg border w-full h-full"
       >
-        <ResizablePanel defaultSize={20} className="m-4">
+        <ResizablePanel defaultSize={20} className="m-4" minSize={15}>
           <div className="flex items-center justify-center h-full mb-10">
             <Suspense>
               <ListWrapper />
             </Suspense>
           </div>
         </ResizablePanel>
-        <ResizableHandle />
+        <ResizableHandle withHandle />
         <ResizablePanel defaultSize={80}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={75}>
+            <ResizablePanel defaultSize={72}>
               <Suspense>
                 <div className="flex items-center justify-center p-6 h-full">
-                  {/* <Chart /> */}
+                  <Chart />
                 </div>
               </Suspense>
             </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={30}>
-              <div className="flex items-center justify-center p-6 mb-10">
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={28} minSize={20}>
+              <div className="flex items-center justify-center px-2 m-4 rounded-lg mb-10 bg-gray-900 ">
                 <OrderBlockTable />
               </div>
             </ResizablePanel>

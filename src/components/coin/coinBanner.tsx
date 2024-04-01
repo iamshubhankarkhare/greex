@@ -136,6 +136,7 @@ const CoinBanner = () => {
           className={` text-base ${isPercentage ? getPercentageTextClass(value as number) : 'text-white'}`}
         >
           {value}
+          {isPercentage && '%'}
         </span>
       </div>
     )

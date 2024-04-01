@@ -27,12 +27,10 @@ export const GET = async function handler(req: Request) {
     const coins = response.data
     return Response.json(coins)
   } catch (err: any) {
-    console.error('sever msg :', err)
     const msg =
       err.response?.data?.status?.error_message ||
       err.response?.statusText ||
       'Internal Server Error'
-    console.error('sfdgdsjhfgsdhjfgdsakhjfgdsakhjfgjs', msg)
     return new Response(`${msg}`, {
       status: err.response?.status || 500,
     })

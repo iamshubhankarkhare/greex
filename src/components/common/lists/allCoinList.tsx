@@ -21,7 +21,7 @@ const AllCoinList = ({ searchInput }: { searchInput: string }) => {
         return response?.data?.entities as BasicCoin[]
       } catch (err: any) {
         console.error('Error fetching coin list:', err)
-        setError(err)
+        setError(err.response?.data)
       }
     }
     return fetchData

@@ -36,15 +36,6 @@ const orders = [
     filled: '1',
     time: '2024-04-01 13:00:00',
   },
-  {
-    pair: 'XRP/USDT',
-    type: 'LIMIT',
-    side: 'SELL',
-    price: '$1.00',
-    amount: '100',
-    filled: '100',
-    time: '2024-04-01 13:30:00',
-  },
 ]
 
 export default function OrderBlockTable() {

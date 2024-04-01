@@ -36,7 +36,7 @@ const CoinList = ({ searchInput }: { searchInput: string }) => {
         return response?.data?.entities as TrendingCoin[]
       } catch (err: any) {
         console.error('Error fetching coin list:', err)
-        setError(err)
+        setError(err.response?.data)
       }
     }
     return fetchData
@@ -70,7 +70,7 @@ const CoinList = ({ searchInput }: { searchInput: string }) => {
     )
   }
   return (
-    <div className="flex flex-col items-center jusify-center bg-[#1D1F22] w-full h-full rounded-lg overflow-auto">
+    <div className="flex flex-col items-center jusify-center bg-gray-900 bg-[#1D1F22] w-full h-full rounded-lg overflow-auto">
       <div className="w-full">
         {filteredCoins &&
           filteredCoins.length > 0 &&
@@ -113,6 +113,7 @@ const CoinList = ({ searchInput }: { searchInput: string }) => {
                       coin.item.data?.price_change_percentage_24h?.usd,
                       2,
                     )}
+                    %
                   </span>
                 </div>
               </div>
