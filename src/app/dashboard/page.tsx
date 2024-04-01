@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Chart from '@/components/common/charts/index'
 import ListWrapper from '@/components/common/lists/listWrapper'
 import OrderBlockTable from '@/components/orderBlock/table'
@@ -12,23 +12,29 @@ import {
 async function Dashboard() {
   return (
     <div className=" h-full flex flex-col">
-      <CoinBanner />
+      <Suspense>
+        <CoinBanner />
+      </Suspense>
       <ResizablePanelGroup
         direction="horizontal"
         className="rounded-lg border w-full h-full"
       >
         <ResizablePanel defaultSize={20} className="m-4">
           <div className="flex items-center justify-center h-full mb-10">
-            <ListWrapper />
+            <Suspense>
+              <ListWrapper />
+            </Suspense>
           </div>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={80}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={75}>
-              <div className="flex items-center justify-center p-6 h-full">
-                {/* <Chart /> */}
-              </div>
+              <Suspense>
+                <div className="flex items-center justify-center p-6 h-full">
+                  {/* <Chart /> */}
+                </div>
+              </Suspense>
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={30}>

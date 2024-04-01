@@ -1,8 +1,7 @@
 import axios, { CancelTokenSource } from 'axios'
-import { NextApiRequest } from 'next'
 let cancelTokenSource: CancelTokenSource | null = null
 
-export const GET = async function handler(req: NextApiRequest) {
+export const GET = async function handler(req: Request) {
   const API_KEY = process.env.COIN_GECKO_API_KEY
 
   // Cancel previous request if it exists

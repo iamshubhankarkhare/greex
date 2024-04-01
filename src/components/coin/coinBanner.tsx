@@ -1,5 +1,5 @@
 'use client'
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, Suspense } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
@@ -150,34 +150,36 @@ const CoinBanner = () => {
   }
 
   return (
-    <div className="flex items-center p-5 h-20">
-      <div className="flex items-center">
-        <Avatar className="flex items-center justify-center w-8">
-          <AvatarImage
-            src={coinData?.image.large}
-            alt={coinData?.name}
-            className="w-8 h-8"
-          />
-          <AvatarFallback className="w-8 h-8">
-            {coinData?.symbol.substr(0, 1)}
-          </AvatarFallback>
-        </Avatar>
-        <span className="text-white text-lg ml-3 uppercase">
-          {coinData?.symbol}/USDT
-        </span>
+    <Suspense>
+      <div className="flex items-center p-5 h-20">
+        <div className="flex items-center">
+          <Avatar className="flex items-center justify-center w-8">
+            <AvatarImage
+              src={coinData?.image.large}
+              alt={coinData?.name}
+              className="w-8 h-8"
+            />
+            <AvatarFallback className="w-8 h-8">
+              {coinData?.symbol.substr(0, 1)}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-white text-lg ml-3 uppercase">
+            {coinData?.symbol}/USDT
+          </span>
+        </div>
+        <Separator orientation="vertical" className="mx-10" />
+        <div className="flex items-center justify-around w-full">
+          {coinDataColumnsData.map((column, i) => (
+            <CoinDataColumn
+              key={i}
+              label={column.label}
+              value={column.value}
+              isPercentage={column.isPercentage}
+            />
+          ))}
+        </div>
       </div>
-      <Separator orientation="vertical" className="mx-10" />
-      <div className="flex items-center justify-around w-full">
-        {coinDataColumnsData.map((column, i) => (
-          <CoinDataColumn
-            key={i}
-            label={column.label}
-            value={column.value}
-            isPercentage={column.isPercentage}
-          />
-        ))}
-      </div>
-    </div>
+    </Suspense>
   )
 }
 

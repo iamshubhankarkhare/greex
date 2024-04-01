@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { NextApiRequest } from 'next'
 
-export const GET = async function handler(req: NextApiRequest) {
+export const GET = async function handler(req: Request) {
   const API_KEY = process.env.COIN_GECKO_API_KEY
   const url: string = req?.url || ''
   const { searchParams } = new URL(url)
