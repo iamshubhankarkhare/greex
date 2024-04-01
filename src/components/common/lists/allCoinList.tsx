@@ -56,7 +56,7 @@ const AllCoinList = ({ searchInput }: { searchInput: string }) => {
     )
   }
   return (
-    <div className="flex flex-col items-center jusify-center bg-[#1D1F22] w-full h-full rounded-lg overflow-auto">
+    <div className="flex flex-col items-center jusify-center bg-gray-900 w-full h-full rounded-lg overflow-auto">
       <div className="w-full">
         {filteredCoins &&
           filteredCoins.length > 0 &&

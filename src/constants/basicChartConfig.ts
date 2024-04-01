@@ -22,7 +22,7 @@ export const chartBaseOptions: PartialChartOptions = {
     background: {
       // we will keep it dark mode
       type: ColorType.Solid,
-      color: '#1D1F22',
+      color: '#111827',
     },
     fontFamily: 'Arial',
     fontSize: 12,
