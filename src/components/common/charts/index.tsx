@@ -67,6 +67,15 @@ const Chart = () => {
   // lifecycle
   useEffect(() => {
     if (currentBar && candlestickSeriesRef.current) {
+      // if any key of the currentBar is null, do not update the chart
+      if (
+        currentBar.open === null ||
+        currentBar.high === null ||
+        currentBar.low === null ||
+        currentBar.close === null
+      ) {
+        return
+      }
       candlestickSeriesRef.current.update(currentBar)
     }
   }, [currentBar])
@@ -75,6 +84,13 @@ const Chart = () => {
     const coin = searchParams.has('coin') ? searchParams.get('coin') : 'bitcoin'
     if (coin) {
       setSelectedCoin(coin)
+      setCurrentBar({
+        open: null,
+        high: null,
+        low: null,
+        close: null,
+        time: new Date().toISOString().split('T')[0],
+      })
     }
   }, [searchParams])
 

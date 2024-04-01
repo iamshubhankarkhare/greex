@@ -11,13 +11,13 @@ import {
 
 async function Dashboard() {
   return (
-    <div className=" h-full flex flex-col">
+    <div className=" h-full flex flex-col mx-4 pb-4">
       <Suspense>
         <CoinBanner />
       </Suspense>
       <ResizablePanelGroup
         direction="horizontal"
-        className="rounded-lg border w-full h-full"
+        className="rounded-lg border w-full"
       >
         <ResizablePanel defaultSize={20} className="m-4" minSize={15}>
           <div className="flex items-center justify-center h-full mb-10">
@@ -29,7 +29,7 @@ async function Dashboard() {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={80}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={72}>
+            <ResizablePanel defaultSize={70}>
               <Suspense>
                 <div className="flex items-center justify-center p-6 h-full">
                   <Chart />
@@ -37,7 +37,7 @@ async function Dashboard() {
               </Suspense>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={28} minSize={20}>
+            <ResizablePanel defaultSize={30} minSize={20}>
               <div className="flex items-center justify-center px-2 m-4 rounded-lg mb-10 bg-gray-900 ">
                 <OrderBlockTable />
               </div>
