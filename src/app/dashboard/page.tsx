@@ -1,6 +1,8 @@
 import React from 'react'
 import Chart from '@/components/common/charts/index'
-import CoinList from '@/components/common/lists/coinList'
+import ListWrapper from '@/components/common/lists/listWrapper'
+import OrderBlockTable from '@/components/orderBlock/table'
+import CoinBanner from '@/components/coin/coinBanner'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -9,28 +11,29 @@ import {
 
 async function Dashboard() {
   return (
-    <div className=" h-full">
+    <div className=" h-full flex flex-col">
+      <CoinBanner />
       <ResizablePanelGroup
         direction="horizontal"
-        className="rounded-lg border w-full"
+        className="rounded-lg border w-full h-full"
       >
         <ResizablePanel defaultSize={20} className="m-4">
-          <div className="flex items-center justify-center h-full">
-            <CoinList />
+          <div className="flex items-center justify-center h-full mb-10">
+            <ListWrapper />
           </div>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={80}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={80}>
+            <ResizablePanel defaultSize={75}>
               <div className="flex items-center justify-center p-6 h-full">
                 {/* <Chart /> */}
               </div>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel defaultSize={20}>
-              <div className="flex items-center justify-center p-6">
-                <span className="font-semibold">Order book</span>
+            <ResizablePanel defaultSize={30}>
+              <div className="flex items-center justify-center p-6 mb-10">
+                <OrderBlockTable />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

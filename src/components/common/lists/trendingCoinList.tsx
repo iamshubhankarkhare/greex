@@ -1,44 +1,25 @@
-import React from 'react'
+'use client'
+import React, { useMemo, useState, useEffect } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   percentageRoundOff,
   formatCurrency,
 } from '@/lib/priceConvertors/formatter'
+import { TrendingCoin } from '@/types/candleStickChart'
 
-const CoinList = async () => {
+const CoinList = ({ searchInput }: { searchInput: string }) => {
+  const [coinListData, setCoinListData] = useState<TrendingCoin[]>([])
+  const [error, setError] = useState(null)
+  const [filteredCoins, setFilteredCoins] = useState<TrendingCoin[]>([])
+
   // methods
-  const fetchCoinList = async () => {
-    // this is a server component so we need to use the base url
-    const baseUrl =
-      process.env.NODE_ENV === 'development'
-        ? process.env.NEXT_PUBLIC_BASE_URL_DEV
-        : process.env.NEXT_PUBLIC_BASE_URL_PROD
 
-    try {
-      const response = await axios.get(`${baseUrl}/api/getCoinList`)
-      return response?.data?.entities
-    } catch (err: any) {
-      return {
-        error: err,
-      }
-    }
-  }
-  const coinListData = await fetchCoinList()
-  console.log('coinListData', coinListData)
-  if (coinListData?.error) {
-    return (
-      <div className="text-red-500 flex items-center justify-center">
-        Error in fetching
-      </div>
-    )
-  }
   /**
    * @description: This function is used to get the percentage text class based on the percentage value
    * @param {number} percentage
-   * @returns {string}
+   * @returns {string} tailwind class
    */
   const getPercentageTextClass = (percentage: number): string => {
     if (percentage < 0) return 'text-red-700'
@@ -46,13 +27,54 @@ const CoinList = async () => {
     else return ' text-[#4e5054]'
   }
 
+  // lifecycle
+
+  const memoizedCoinListData = useMemo(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/getCoinList`)
+        return response?.data?.entities as TrendingCoin[]
+      } catch (err: any) {
+        console.error('Error fetching coin list:', err)
+        setError(err)
+      }
+    }
+    return fetchData
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = (await memoizedCoinListData()) as TrendingCoin[]
+      setCoinListData(data)
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (coinListData) {
+      const filtered = coinListData.filter(
+        (coin) =>
+          coin.item.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+          coin.item.symbol.toLowerCase().includes(searchInput.toLowerCase()),
+      )
+      setFilteredCoins(filtered)
+    }
+  }, [coinListData, searchInput])
+
   // UI
+  if (error) {
+    return (
+      <div className="text-red-500 flex items-center justify-center">
+        Error in fetching
+      </div>
+    )
+  }
   return (
     <div className="flex flex-col items-center jusify-center bg-[#1D1F22] w-full h-full rounded-lg overflow-auto">
       <div className="w-full">
-        {coinListData &&
-          coinListData.length &&
-          coinListData.map((coin: any, i: number) => (
+        {filteredCoins &&
+          filteredCoins.length > 0 &&
+          filteredCoins.map((coin: any, i: number) => (
             <Link
               href={`/dashboard?coin=${coin?.item?.id}`}
               key={coin?.item?.id}
@@ -60,7 +82,7 @@ const CoinList = async () => {
             >
               <div
                 key={coin?.item?.name}
-                className={` cursor-pointer px-0 mx-4 py-4 flex items-center justify-between   border-0.5 border-[#4e5054] ${i === coinListData.length - 1 ? 'border-b-0' : 'border-b'}`}
+                className={` cursor-pointer px-0 mx-4 py-4 flex items-center justify-between   border-0.5 border-[#4e5054] ${i === filteredCoins.length - 1 ? 'border-b-0' : 'border-b'}`}
               >
                 <div className="flex w-full">
                   <Avatar className="flex items-center justify-center w-5">
@@ -96,6 +118,12 @@ const CoinList = async () => {
               </div>
             </Link>
           ))}
+        {/* handle the case when there are no coins */}
+        {filteredCoins && !filteredCoins.length && (
+          <div className="text-[#4e5054] flex items-center justify-center h-72 bg-transparent">
+            No coins found
+          </div>
+        )}
       </div>
     </div>
   )

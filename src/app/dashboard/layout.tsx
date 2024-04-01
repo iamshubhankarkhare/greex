@@ -18,7 +18,7 @@ export default async function DashboardLayout({
         </span>
         <LogoutLink>Log out</LogoutLink>
       </nav>
-      <main className="flex-grow overflow-auto px-6 pb-6">{children}</main>
+      <main className="h-full overflow-hidden">{children}</main>
     </section>
   )
 }

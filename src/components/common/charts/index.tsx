@@ -97,6 +97,7 @@ const Chart = () => {
       )
 
       pricesWs.current.onmessage = function (msg) {
+        console.log('msg', msg)
         // Update the last candlestick with the live price
         if (msg.data) {
           const priceObject = JSON.parse(msg.data)
@@ -124,9 +125,6 @@ const Chart = () => {
   return (
     <div className="py-4 bg-[#1D1F22] w-full h-full min-w-[500px] min-h-[300px] rounded-md flex items-center justify-center">
       <div> {error && <h1 className="text-red-500">{error}</h1>}</div>
-      {selectedCoin && (
-        <h1 className="text-white text-2xl font-semibold">{selectedCoin}</h1>
-      )}
       <div className="h-full w-full m-4 " ref={chartRef} />
     </div>
   )

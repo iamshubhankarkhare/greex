@@ -1,17 +1,23 @@
 import axios, { CancelTokenSource } from 'axios'
 import { NextApiRequest } from 'next'
-
 let cancelTokenSource: CancelTokenSource | null = null
+
 export const GET = async function handler(req: NextApiRequest) {
   const API_KEY = process.env.COIN_GECKO_API_KEY
-  const API_URL: string = `https://api.coingecko.com/api/v3/search/trending`
+
   // Cancel previous request if it exists
   if (cancelTokenSource) {
     cancelTokenSource.cancel('Only one request allowed at a time')
   }
 
+  const url: string = req?.url || ''
+  const { searchParams } = new URL(url)
+  const coin: string | null = searchParams.get('coin')
+
   try {
+    const API_URL: string = `https://api.coingecko.com/api/v3/coins/${coin}`
     cancelTokenSource = axios.CancelToken.source()
+
     const response = await axios.get(API_URL, {
       headers: {
         'x-cg-api-key': API_KEY,
@@ -19,8 +25,8 @@ export const GET = async function handler(req: NextApiRequest) {
       cancelToken: cancelTokenSource.token,
     })
 
-    const coins = response.data?.coins ?? []
-    return Response.json({ entities: coins })
+    const coins = response.data
+    return Response.json(coins)
   } catch (err: any) {
     console.error('sever msg :', err)
     const msg =

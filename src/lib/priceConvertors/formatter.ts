@@ -35,6 +35,7 @@ export const formatCurrency = (
   decimalPlaces: number,
   currencySymbol: string,
 ): string => {
+  if (value === undefined) return '-'
   if (value.toString().includes('e')) {
     return `${currencySymbol}${value.toFixed(10)}`
   }
